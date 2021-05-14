@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="tv_content_list_item" parent="TextAppearance.AppCompat.Medium" >
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black_text_content_list_item</item>
+    </style>
+</resources>
