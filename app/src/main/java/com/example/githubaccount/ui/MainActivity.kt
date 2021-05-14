@@ -1,6 +1,5 @@
 package com.example.githubaccount.ui
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,12 +8,9 @@ import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.core.data.Resource
-import com.example.core.domain.model.User
-import com.example.core.utils.ErrorMessageSplit
-import com.example.githubaccount.R
 import com.example.githubaccount.databinding.ActivityMainBinding
+import com.example.githubaccount.util.ErrorBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
@@ -29,11 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: MainAdapter
 
     private val userViewModel: MainViewModel by viewModels()
-
-
-    var page = 1
-    var isLoading = false
-    var limit = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,17 +52,19 @@ class MainActivity : AppCompatActivity() {
             Timber.tag(tag).d("observer_user $data")
             if (data != null) {
                 when (data) {
-                    is Resource.Loading -> binding.progressBarProposal.visibility = View.VISIBLE
+                    is Resource.Loading -> binding.progressBar.visibility = View.VISIBLE
                     is Resource.Success -> {
-                        binding.progressBarProposal.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
                         adapter.setData(data.data)
                         Timber.tag(tag).d("observer_user_adapter ${data.data}")
+                        binding.emptyData.root.visibility =
+                            if (data.data?.isNotEmpty() == true) View.GONE else View.VISIBLE
                     }
                     is Resource.Error -> {
-                        binding.progressBarProposal.visibility = View.GONE
-                        val message = ErrorMessageSplit.message(data.message.toString())
-                        val code = ErrorMessageSplit.code(data.message.toString())
-                        Timber.d("check errornya dimana ya : $message dan $code")
+                        binding.progressBar.visibility = View.GONE
+                        val message = "Something wrong!"
+                        ErrorBottomSheet.instance(message)
+                            .show(supportFragmentManager, ErrorBottomSheet.TAG)
 
                     }
                 }
@@ -82,6 +75,11 @@ class MainActivity : AppCompatActivity() {
         userViewModel.search.observe(this, { data ->
             adapter.setData(data)
 
+            if (data.isEmpty()){
+                binding.emptyData.root.visibility =
+                    if (data.isNotEmpty()) View.GONE else View.VISIBLE
+            }
+
         })
     }
 
@@ -91,6 +89,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvUser.setHasFixedSize(true)
         binding.rvUser.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        (binding.rvUser.layoutManager as LinearLayoutManager).scrollToPosition(Integer.MAX_VALUE/2)
         binding.rvUser.adapter = adapter
 
         binding.rvUser.addItemDecoration(
@@ -100,32 +99,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-//        binding.rvUser.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                val visibleItemCount = (binding.rvUser.layoutManager as LinearLayoutManager).childCount
-//                val pastVisibleItem =
-//                    (binding.rvUser.layoutManager as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
-//                val total = adapter.itemCount
-//
-//                if (binding.progressBarProposal.visibility == View.GONE){
-//
-//                    if ((visibleItemCount + pastVisibleItem) >= total){
-//                        page++
-//                        getPage()
-//                    }
-//
-//                }
-//                super.onScrolled(recyclerView, dx, dy)
-//            }
-//        })
     }
 
 
-//    fun getPage(){
-//        binding.progressBarProposal.visibility = View.VISIBLE
-//
-//        val start = (page -1) *limit
-//        val end = page * limit
-//
-//    }
 }

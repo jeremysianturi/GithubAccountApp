@@ -14,25 +14,13 @@ class NetworkConnectionInterceptor @Inject constructor(@ApplicationContext conte
     Interceptor{
 
     private val applicationContext = context
-//    private val session = (applicationContext)
-
-//    private lateinit var mPreference: UserPreference
-//    private lateinit var mPreferenceEntity: PreferenceEntity
-
-//    private lateinit var mPreference
-//    private lateinit var mPreferenceEntity = mPreference.getPref()
 
     override fun intercept(chain: Interceptor.Chain): Response {
-
-//        mPreference = UserPreference(applicationContext)
-//        mPreferenceEntity = mPreference.getPref()
-//        val token = mPreferenceEntity.token
 
         if (!isInternetAvailable())
             throw ApiException("Make sure you have an active data connection")
 
         val request = chain.request().newBuilder()
-//            .addHeader("Authorization", "Bearer $token")
             .build()
 
         val response = chain.proceed(request)
@@ -42,41 +30,32 @@ class NetworkConnectionInterceptor @Inject constructor(@ApplicationContext conte
                 //Show Bad Request Error Message
                 val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
-//                throw ApiException(response.message)
             }
             401 -> {
                 //Show UnauthorizedError Message
-//                val thowableMassage = "${response.message}/${response.code}"
-//                throw ApiException(response.message)
-                val thowableMassage = "Your token is Expired:${response.code}"
+                val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
 
             }
 
             403 -> {
                 //Show Forbidden Message
-//                val thowableMassage = "${response.message}/${response.code}"
-//                throw ApiException(response.message)
                 val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
             }
             404 -> {
                 //Show NotFound Message
-//                throw ApiException(response.message)
                 val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
 
             }
             422 -> {
-//                val thowableMassage = "${response.message}/${response.code}"
-//                throw ApiException(response.message)
+
                 val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
             }
             500 -> {
                 //Show Internal Server Error
-//                val thowableMassage = "${response.message}/${response.code}"
-//                throw ApiException(response.message)
                 val thowableMassage = "${response.message}:${response.code}"
                 throw ApiException(thowableMassage)
             }
@@ -86,7 +65,6 @@ class NetworkConnectionInterceptor @Inject constructor(@ApplicationContext conte
         println("request ${request.body}")
         println("response ${response.code}")
 
-//        Timber.tag("networkInterception").d("token $token")
         return response
     }
 

@@ -12,5 +12,7 @@
     <color name="orange_500">#FF9800</color>
     <color name="black_text_content_list_item">#495566</color>
     <color name="orange_700">#F57C00</color>
+    <color name="colorRedDelete">#B00020</color>
+
 
 </resources>

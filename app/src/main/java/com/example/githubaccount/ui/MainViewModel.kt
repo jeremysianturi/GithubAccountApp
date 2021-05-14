@@ -14,11 +14,11 @@ class MainViewModel @ViewModelInject constructor(private val userUsecase: UserUs
 
     val searchQuery = MutableStateFlow("")
 
-    private val curiculumFlow = searchQuery.flatMapLatest {
+    private val userFlow = searchQuery.flatMapLatest {
         userUsecase.getSearchUser(it)
     }
 
-    val search = curiculumFlow.asLiveData()
+    val search = userFlow.asLiveData()
 
     fun getUser() =
         userUsecase.getUser().asLiveData()

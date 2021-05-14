@@ -10,11 +10,13 @@ import com.example.githubaccount.databinding.ItemListUserBinding
 import com.example.githubaccount.util.loadImage
 import timber.log.Timber
 
-class MainAdapter : RecyclerView.Adapter<MainAdapter.UserViewHolder>() {
+class MainAdapter() : RecyclerView.Adapter<MainAdapter.UserViewHolder>() {
 
     var onItemClick: ((User) -> Unit)? = null
 
     private val mData = ArrayList<User>()
+
+
 
     fun setData(newListData: List<User>?) {
         if (newListData == null) return
@@ -29,16 +31,28 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.UserViewHolder>() {
     ): MainAdapter.UserViewHolder {
         val mView =
             LayoutInflater.from(parent.context).inflate(R.layout.item_list_user, parent, false)
-        return UserViewHolder(mView)
+            return UserViewHolder(mView)
     }
 
     override fun getItemCount(): Int {
         Timber.d("check size data : ${mData.size}")
-        return mData.size
+        if (mData.size == 0){
+            return mData.size
+
+        } else {
+            return Integer.MAX_VALUE
+        }
     }
 
     override fun onBindViewHolder(holder: MainAdapter.UserViewHolder, position: Int) {
-        holder.bind(mData[position])
+        if (mData.size == 0){
+//            holder.bind(mData[position])
+        } else {
+            val positionList = position % mData.size
+            holder.bind(mData[positionList])
+        }
+
+
     }
 
 
@@ -48,11 +62,9 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.UserViewHolder>() {
         fun bind(data: User) {
             with(binding) {
 
-                Timber.d("check isinya : ${data.login}")
                 tvNameUser.text = data.login
                 tvIdUser.text = data.id.toString()
                 ivProfilepic.loadImage(itemView.context,data.avatarUrl)
-                Timber.d("checkhcekcheck")
             }
         }
 
