@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.data.Resource
 import com.example.githubaccount.databinding.ActivityMainBinding
+import com.example.githubaccount.util.CheckConnection
 import com.example.githubaccount.util.ErrorBottomSheet
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,6 +32,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val checkConnection = CheckConnection.internetAvailable(this)
+        if (!checkConnection) {
+            Toast.makeText(this, "No Connection Detected", Toast.LENGTH_SHORT).show()
+        } else {
+            Timber.d("checkConnectionClass : $checkConnection")
+        }
 
         //biar keyboard ga lgsg popup
         this.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
