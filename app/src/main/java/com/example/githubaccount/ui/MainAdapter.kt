@@ -52,7 +52,7 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.UserViewHolder>() {
                 tvNameUser.text = data.login
                 tvIdUser.text = data.id.toString()
                 ivProfilepic.loadImage(itemView.context,data.avatarUrl)
-
+                Timber.d("checkhcekcheck")
             }
         }
 
